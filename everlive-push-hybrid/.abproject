@@ -1,7 +1,7 @@
 {
   "ProjectGuid": "9f5b4aad-2a66-44ce-8c28-3377a9371c1b",
   "ProjectTypeGuids": "{070BCB52-5A75-4F8C-A973-144AF0EAFCC9}",
-  "AppIdentifier": "com.telerik.PushNotificationApp",
+  "AppIdentifier": "com.telerik.PushSampleApp",
   "ProjectName": "everlive-push-hybrid",
   "AndroidPermissions": [
     "android.permission.ACCESS_COARSE_LOCATION",
@@ -79,5 +79,6 @@
   "projectVersion": "1",
   "WP8WindowsPublisherName": "CN=Telerik",
   "WP8PackageIdentityName": "1234Telerik.com.telerik.PushNotificationApp",
-  "WPSdk": "8.0"
+  "WPSdk": "8.0",
+  "iOSDeploymentTarget": "8.2"
 }

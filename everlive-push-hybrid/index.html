@@ -1,19 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="pushApp">
     <head>
         <title></title>
         <meta charset="utf-8" />
-
+            
         <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
         <link href="styles/main.css" rel="stylesheet" />
+        
+        <script src="cordova.js"></script>
+
+        <script src="kendo/js/jquery.min.js"></script>
+        <script src="kendo/js/kendo.mobile.min.js"></script>
+
+        <script src="bower_components/everlive/min/everlive.all.min.js"></script>
+
+        <script src="scripts/app/main.js" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+        <script src="scripts/app/App.js"></script>
+        
+        <link href="styles/ionic.css" rel="stylesheet">
+
+    	<script src="js/ionic.bundle.js"></script>
     </head>
-    <body id="friendsApp">
+    <body id="friendsApp" ng-controller="HomeCtrl">
+      
         <section data-role="layout" data-id="default">
             <!--View content will render here-->
         </section>
         <!--MAIN VIEW -->
+          <ion-side-menus>
+    <ion-side-menu-content>
+    </ion-side-menu-content>
+    <ion-side-menu side="left">
+    </ion-side-menu>
+  </ion-side-menus>
+        
         <div data-role="view" id="welcome" data-layout="default" class="welcome-scrn form-view" data-model="app.viewModels.main">
             <h1>
+                          <ul>
+    <li ng-repeat="phone in phones">
+      <span>{{phone.name}}</span>
+      <p>{{phone.snippet}}</p>
+    </li>
+  </ul>
                 <b>Telerik Backend Services</b> sample application
             </h1>
             <p id="messageParagraph" style="color: white; font-size: 16px;">
@@ -29,14 +58,5 @@
                 <p>Powered by Telerik Backend Services.</p>
             </div>
         </div>
-
-        <script src="cordova.js"></script>
-
-        <script src="kendo/js/jquery.min.js"></script>
-        <script src="kendo/js/kendo.mobile.min.js"></script>
-
-        <script src="bower_components/everlive/min/everlive.all.min.js"></script>
-
-        <script src="scripts/app/main.js" type="text/javascript"></script>
     </body>
 </html>
