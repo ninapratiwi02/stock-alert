@@ -1,4 +1,4 @@
-var pushApp = angular.module('pushApp', []);
+var pushApp = angular.module('pushApp', ['ionic']);
 
 pushApp.controller('HomeCtrl', function ($scope) {
   $scope.phones = [
