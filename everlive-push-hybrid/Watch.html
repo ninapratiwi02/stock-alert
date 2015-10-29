@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <title>Hello World</title>
+</head>
+<body>
+<div class="app">
+  <h1>Apache Cordova</h1>
+
+  <div id="deviceready" class="blink">
+    <p class="event listening">Connecting to Device</p>
+
+    <p class="event received">Device is Ready</p>
+    <script>
+      function feedback(what) {
+        console.log("feedback: " + what);
+        document.getElementById("feedback").innerHTML = what;
+      }
+      window.onerror = function (a, b, c) {
+        feedback(a + ", " + b + ", " + c);
+        alert(a + ", " + b + ", " + c);
+      }
+    </script>
+    <button onclick="sendHeaderMessageImageGlance()">glance: header, message, img</button>
+    <br/>
+    <button onclick="sendMessageImageGlance()">glance: message, img</button>
+    <button onclick="sendImageGlance()">glance: img</button>
+    <button onclick="sendTableGlance()">glance: table</button>
+    <button onclick="sendMapGlance()">glance: map</button>
+    <br/><br/>
+    <button onclick="loadMainAppPage()">update app UI</button>
+    <br/><br/>
+
+    <div>Feedback from Watch App:</div>
+    <div style="font-weight:bold" id="feedback"></div>
+    <img id="image" src="" style="max-width: 150px"/>
+  </div>
+</div>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script>
+  setTimeout(function () {
+    feedback(localStorage.getItem("someOption"));
+  }, 1000);
+  var remoteGET = function () {
+    if (localStorage.getItem("origin") != null) {
+      return localStorage.getItem("origin");
+    } else {
+      localStorage.setItem("origin", "Reload for IP");
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", 'https://httpbin.org/ip', "false");
+      xhr.send();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          ip = response.origin;
+          localStorage.setItem("origin", ip);
+        }
+      };
+    }
+  };
+  function onGlanceRequestsUpdate() {
+    sendTableGlance();
+  }
+  function onAppRequestsUpdate() {
+    // proof that remote networking works with the app being inactive,
+    // but I don't want to wait for it to return before rendering the watch UI (need a fast dev cycle)
+    //remoteGET();
+    loadMainAppPage();
+  }
+  function onNotificationSendSuccess(msg) {
+    console.log("noti send ok: " + msg);
+  }
+  function onNotificationSendError(msg) {
+    alert("noti send nok: " + msg);
+  }
+  // TODO convenience methods in the plugin JS API would be nice: applewatch.sendToGlance/AppMain/AppDetail which sets the ID
+  function sendImageGlance() {
+    var payload = {
+      'image': {
+        'src': 'www/img/logo.png'
+      }
+    };
+    applewatch.loadGlance(payload);
+  }
+  function sendMessageImageGlance() {
+    var payload = {
+      'label2': {'value': 'Red message, a bit smaller image, no header to allow 3 lines', 'color': '#DD0000'}, // optional, max 2 lines
+      'image': {'src': 'www/img/logo.png', 'width': 60} // optional
+    };
+    applewatch.loadGlance(payload);
+  }
+  function sendTableGlance() {
+    var payload = {
+      'label2': {'value': 'Table with a colors. ' + new Date(), 'color': '#FFFFFF'},
+      'table': { // don't add selectable rows to a glance since glances are read-only
+        'rows': [
+          {
+            'type': 'OneColumnRowType', // available types are specified in ObjC
+            'group': {
+              'backgroundColor': '#1884C4',
+              'cornerRadius': 8
+            },
+            'label': {'value': '  images!'}, // unlike HTML, multiple spaces have effect
+            'imageLeft': {'src': 'www/img/logo.png', 'width': 25, 'height': 30},
+            'imageRight': {'src': 'www/img/logo.png', 'width': 25, 'height': 30}
+          },
+          {
+            'type': 'OneColumnRowType',
+            'group': {
+              'backgroundColor': '#7884C4',
+              'cornerRadius': 8
+            },
+            'label': {'value': '2nd row, no img'}
+          }
+        ]
+      }
+    };
+    applewatch.loadGlance(payload);
+  }
+  function sendMapGlance() {
+    var payload = {
+      'label': {'value': 'Here\'s a map of NL', 'color': '#FFFFFF'},
+      'map': {
+        'center': {
+          // Eddy's home
+          'lat': 52.1851552,
+          'lng': 5.3996181
+        },
+        // Entire Netherlands
+        'zoom': 3.55, // 0.001 is about streetlevel, 4 fits the entire Netherlands
+        'annotations': [ // up to 5 annotations (custom pins), any more are ignored (play with the zoom value to make them all fit)
+          {
+            'pinColor': 'green',
+            'lat': 52.1851,
+            'lng': 5.3996
+          }
+        ]
+      }
+    };
+    applewatch.loadGlance(payload);
+  }
+  function sendHeaderMessageImageGlance() {
+    var payload = {
+      'label': {
+        'value': 'A gorgeous blue header',
+        'color': '#1884C4',
+        'font': { // optional
+          'size': 10
+        }
+      },
+      'label2': { // optional, max 2 lines
+        'value': 'With a white message, served @ ' + new Date(),
+        'color': '#FFFFFF',
+        'font': {
+          'size': 8 // default 12
+        }
+      },
+      'image': {
+        'src': 'www/img/logo.png',
+        'alpha': 0.8
+      }
+    };
+    applewatch.loadGlance(payload);
+  }
+  function onMainAppPageButtonPressed() {
+    // do some action here, then update the app
+    loadMainAppPage();
+  }
+  function onDetailPageButtonPressed() {
+    // do some action here, then update the app
+    onAppDetailPageRequestsUpdate('Button was pressed');
+  }
+  function onSomeOptionSelected(on) {
+    localStorage.setItem("someOption", on);
+    feedback(on);
+  }
+  function onVoted(result) {
+    if (result.type == "base64img") {
+      feedback("vote result:");
+      document.getElementById("image").src = result.data;
+    } else {
+      feedback("vote result: " + result.data);
+    }
+  }
+  function onTableRowSelected(index) {
+    feedback('Selected row index: ' + index);
+    if (index == 0) {
+      applewatch.navigateToAppDetail(); // back is: or applewatch.navigateToAppMain()
+    }
+  }
+  function onDetailTableRowSelected(index) {
+    feedback('Selected detail row: ' + index);
+  }
+  var sliderVal = 25;
+  function onSliderChanged(val) {
+    sliderVal = val;
+    feedback("<br/>slider update: " + val);
+  }
+  function onAppDetailPageRequestsUpdate(fromAction) {
+    var d = new Date();
+    var payload = {
+      'group': { // the page wrapper. the defaults are probably best though
+        'cornerRadius': 0
+      },
+      'title': 'Back', // optional, shown in the navbar. Better not to set it if this is shown modally (because the default 'Cancel' is shown briefly first)
+      'label': {
+        'value': 'Refreshed @ ' + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds(),
+        'color': '#1884C4',
+        'font': { // optional
+          'size': 10
+        }
+      },
+      'label2': {
+        'value': fromAction === undefined ? 'Default text :)' : fromAction
+      },
+      'table': { // this element is superawesome.. it's quite flexible and extendible. It can't have buttons, but it can have a callback which gets the selected row index.
+        'callback': 'onDetailTableRowSelected',
+        'rows': [
+          {
+            'type': 'OneColumnRowType', // available types are specified in ObjC
+            'group': {
+              'backgroundColor': '#1884C4',
+              'cornerRadius': 8
+            },
+            'label': {'value': 'With image'},
+            'imageRight': {'src': 'www/img/logo.png', 'width': 30}
+          },
+          {
+            'type': 'OneColumnRowType',
+            'group': {
+              'backgroundColor': '#1884C4',
+              'cornerRadius': 8
+            },
+            'label': {'value': '2nd, no img'}
+          }
+        ]
+      },
+      'actionButton': {
+        'title': {
+          'value': 'Refresh!',
+          'color': '#FFA500',
+          'font': {
+            'size': 12
+          }
+        },
+        'color': '#1884C4',
+        'alpha': 1, // default 1
+        'callback': 'onDetailPageButtonPressed'
+      },
+      'contextMenu': {
+        'items': [
+          {
+            'title': 'Delete',
+            'iconNamed': 'trash',
+            'callback': 'onContextMenuDelete'
+          }
+        ]
+      }
+    };
+    applewatch.loadAppDetail(payload);
+  }
+  function loadMainAppPage() {
+    var d = new Date();
+    var payload = {
+      'group': { // the page wrapper. the defaults are probably best
+        'backgroundColor': '#1884C4',
+        'cornerRadius': 0
+      },
+      'title': 'Demo', // optional
+      'label': {
+        'value': 'Blue header label',
+        'color': '#1884C4',
+        'font': { // optional
+          'size': 10
+        }
+      },
+      'label2': { // optional, max 2 lines
+        'value': 'UI built @ ' + new Date(),
+        'color': '#FFFFFF',
+        'font': {
+          'size': 8 // default 12
+        }
+      },
+      'image': { // optional
+        'src': 'www/img/logo.png'
+      },
+      'slider': {
+        'steps': 20, // of 100, so each step is 5 in this case
+        'value': sliderVal, // of 100, so this is a percentage
+        'color': '#CC0000',
+        'callback': 'onSliderChanged',
+        'hideValue': false // default false, allows to now show the value below the slider
+      },
+      'switch': {
+        'title': 'Want foo?', // localStorage.getItem("origin"),
+        'on': (localStorage.getItem("someOption") == "true"),
+        'color': '#CC0000',
+        'callback': 'onSomeOptionSelected'
+      },
+      'switch2': {
+        'title': 'And bar?',
+        'on': true,
+        'color': '#02779E'
+      },
+      'map': {
+        'center': {
+          // Eddy's home
+          'lat': 52.1851552,
+          'lng': 5.3996181
+        },
+        // Entire Netherlands
+        'zoom': 4.1, // 0.001 is about streetlevel, 4 fits the entire Netherlands
+        'annotations': [ // up to 5 annotations (custom pins), any more are ignored (play with the zoom value to make them all fit)
+          {
+            'pinColor': 'green',
+            'lat': 52.1851,
+            'lng': 5.3996
+          },
+          {
+            'pinColor': 'red',
+            'lat': 51.751,
+            'lng': 8.4
+          },
+          {
+            'pinColor': 'purple',
+            'lat': 50.2251,
+            'lng': 4.7196
+          }
+        ]
+      },
+      'table': { // this element is superawesome.. it's quite flexible and extendible. It can't have buttons, but it can have a callback which gets the selected row index.
+        'callback': 'onTableRowSelected',
+        'alpha': 1,
+        'rows': [
+          {
+            'type': 'OneColumnSelectableRowType',
+            'label': {
+              'value': 'Selectable row, no img',
+              'color': '#FFFFFF',
+              'font': {
+                'size': 10
+              }
+            }
+          },
+          {
+            'type': 'OneColumnRowType',
+            // wrapping these in a group so its usage and processing is predictable
+            'group': {
+              'backgroundColor': '#FFFFFF',
+              'cornerRadius': 16
+            },
+            'label': {
+              'value': 'Right img',
+              'color': '#1884C4'
+            },
+            'imageRight': {'src': 'www/img/logo.png', 'width': 25, 'height': 30}
+          },
+          {
+            'type': 'TwoColumnsRowType',
+            'col1label': {
+              'value': '50%',
+              'color': '#FFA500',
+              'font': {
+                'size': 16
+              }
+            },
+            'col2image': {'src': 'www/img/logo.png', 'width': 25, 'height': 30}
+          }
+        ]
+      },
+      'actionButton': {
+        'title': {
+          'value': 'Refresh',
+          'color': 'blaaaaaaa', // testing robustness, should fall back to black
+          'font': {
+            'size': 17
+          }
+        },
+        'color': '#FFFFFF',
+        'width': 80,
+        'height': 44,
+        'alpha': 1, // default 1
+        'callback': 'onMainAppPageButtonPressed'
+      },
+      'userInputButton': {
+        'inputMode': 'WKTextInputModeAllowAnimatedEmoji', // WKTextInputModePlain, WKTextInputModeAllowEmoji, WKTextInputModeAllowAnimatedEmoji
+        'suggestions': ['foo', 'bar', 'shaz'],
+        'width': 60,
+        'height': 30,
+        'title': {
+          'value': 'Vote',
+          'color': '#FFFFFF',
+          'font': {
+            'size': 12 // default 15
+          }
+        },
+        'backgroundColor': '#CC0000',
+        'alpha': 1, // default 1
+        'callback': 'onVoted'
+      },
+      'pushNavButton': {
+        'backTitle': 'baaack',
+        'title': {
+          'value': 'Push nav'
+        },
+        'backgroundColor': '#FFA500',
+        'alpha': 1 // default 1
+      },
+      'modalNavButton': {
+        'closeTitle': 'kloos',
+        'title': {
+          'value': 'Modal nav'
+        },
+        'backgroundColor': '#FFA500'
+      },
+      // triggered by force touch
+      'contextMenu': {
+        // configure up to 4 items (any more will be ignored)
+        'items': [
+          {
+            'title': 'Play',
+            //                     'image':'www/..',
+            //                     'imageNamed':'',
+            'iconNamed': 'play', // https://developer.apple.com/library/ios/documentation/WatchKit/Reference/WKInterfaceController_class/index.html#//apple_ref/doc/c_ref/WKMenuItemIcon
+            'callback': 'onContextMenuPlay'
+          },
+          {
+            'title': 'Resume',
+            'iconNamed': 'resume',
+            'callback': 'onContextMenuResume'
+          }
+        ]
+      }
+    };
+    applewatch.loadAppMain(payload);
+  }
+  function onContextMenuPlay() {
+    feedback("Play");
+  }
+  function onContextMenuResume() {
+    feedback("Resume");
+  }
+  function onContextMenuDelete() {
+    feedback("Delete");
+  }
+  function onNotificationRegistrationSuccess(msg) {
+    console.log("noti reg ok: " + msg);
+    //we can now send a notification
+    var payload = {
+      "title": "Short!",
+      "category": "default",
+      "body": "Shown in the long-look interface to provide more detail",
+      "badge": 0
+    };
+    //setTimeout(function() {
+    //  applewatch.sendNotification(onNotificationSendSuccess, onNotificationSendError, payload);
+    //}, 4000);
+  }
+  function onNotificationRegistrationError(msg) {
+    alert("noti reg nok: " + msg);
+  }
+  function onNotificationReceived(identifier) {
+    feedback("Notification identifier: " + identifier);
+  }
+  function initAppleWatch() {
+    applewatch.init(function () {
+          // register for notifications
+          // TODO throws 'undefined is not a function'.. setTimeout ?
+//                        applewatch.registerNotifications(onNotificationRegistrationSuccess, onNotificationRegistrationError);
+        },
+        function (err) {
+          // an error occurred
+          alert("err: " + JSON.stringify(err));
+        });
+    applewatch.callback.onLoadAppMainRequest = onAppRequestsUpdate;
+    applewatch.callback.onLoadAppDetailRequest = onAppDetailPageRequestsUpdate;
+    applewatch.callback.onLoadGlanceRequest = onGlanceRequestsUpdate;
+    applewatch.callback.onLocalNotification = onNotificationReceived;
+    applewatch.callback.onRemoteNotification = onNotificationReceived;
+    applewatch.callback.onError = function (message) {
+      feedback("Error: " + message);
+    };
+  }
+  document.addEventListener('deviceready', initAppleWatch, false);
+</script>
+</body>
+</html>
