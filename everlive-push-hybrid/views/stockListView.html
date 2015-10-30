@@ -1,18 +1,188 @@
-<div id="main-view" class="view" data-role="view" data-model="app.MainViewModel">
+<div ng-app="pushApp" ng-controller="HomeCtrl" id="main-view" class="view" data-role="view" data-model="app.MainViewModel">
     <div data-role="header">
         <div data-role="navbar">
             Stock List
-            <a class="nav-button nav-button-logout hide-text" data-align="left" data-role="button" data-click="app.logout">Log out</a>
+            <a class="nav-button nav-button-back hide-text" data-align="left" data-role="button" href="views/homeView.html">Back</a>
         </div>
     </div>
+    
+    
+    
+    
+    <div id="example-radio-buttons" class="ionic-body active-preview">
+    <div class="bar bar-header">
+      <div class="h1 title">Radio Button List</div>
+    </div>
+
+    <div class="content has-header">
+
+      <div class="list">
+
+        <label class="item item-radio">
+          <input type="radio" name="group" value="go" checked="checked">
+          <div class="item-content">
+            Go
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+        <label class="item item-radio">
+          <input type="radio" name="group" value="python">
+          <div class="item-content">
+            Python
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+        <label class="item item-radio">
+          <input type="radio" name="group" value="ruby">
+          <div class="item-content">
+            Ruby
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+        <label class="item item-radio">
+          <input type="radio" name="group" value=".net">
+          <div class="item-content">
+            .Net
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+        <label class="item item-radio">
+          <input type="radio" name="group" value="java">
+          <div class="item-content">
+            Java
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+        <label class="item item-radio">
+          <input type="radio" name="group" value="php">
+          <div class="item-content">
+            PHP
+          </div>
+          <i class="radio-icon ion-checkmark"></i>
+        </label>
+
+      </div>
+
+    </div>
+
+  </div>
+    
+    
+    {{selectedstock}}
+    <div class="list">
+        
+        <label class="item item-radio">
+    <input type="radio" name="group" value="AMP" ng-model="{{selectedstock}}" checked="checked">
+    <div class="item-content">
+      AMP
+    </div>
+    <i class="radio-icon ion-checkmark"></i>
+  </label>
+        
+        <label class="item item-radio">
+    <input type="radio" name="group" value="ANZ" ng-model="{{selectedstock}}">
+    <div class="item-content">
+      ANZ
+    </div>
+    <i class="radio-icon ion-checkmark"></i>
+  </label>
+        
+        <label class="item item-radio">
+    <input type="radio" name="group" value="BHP" ng-model="{{selectedstock}}">
+    <div class="item-content">
+      BHP
+    </div>
+    <i class="radio-icon ion-checkmark"></i>
+  </label>
+    
+    
+            <label class="item item-radio">
+    <input type="radio" name="group" value="BXB" ng-model="{{selectedstock}}">
+    <div class="item-content">
+      BXB
+    </div>
+    <i class="radio-icon ion-checkmark"></i>
+  </label>
+    
+                    <label class="item item-radio">
+    <input type="radio" name="group" value="CBA" ng-model="{{selectedstock}}">
+    <div class="item-content">
+      CBA
+    </div>
+    <i class="radio-icon ion-checkmark"></i>
+  </label>
+    </div>
+    
+    
+              <ul>
+    <li ng-repeat="phone in phones">
+      <span>{{phone.name}}</span>
+      <p>{{phone.snippet}}</p>
+    </li>
+  </ul>
+    
+    </div>
+
+            <!--<ion-content>
+      
+      <div class="list">
+        
+        <div class="item item-divider"> 
+          Clientside, Selected Value: {{ data.clientSide }}
+        </div>
+        
+        <ion-radio ng-repeat="item in clientSideList"
+                   ng-value="item.value"
+                   ng-model="data.clientSide">
+          {{ item.text }}
+        </ion-radio>
+        
+        <div class="item item-divider">
+          Serverside, Selected Value: {{ data.serverSide }}
+        </div>
+        
+        <ion-radio ng-repeat="item in serverSideList"
+                   ng-value="item.value"
+                   ng-model="data.serverSide"
+                   ng-change="serverSideChange(item)"
+                   name="server-side">
+          {{ item.text }}
+        </ion-radio>
+        
+      </div>
+      
+    </ion-content>
+        </div>-->
+<!--</div>
+    
     <div class="console">
         <br />
-        <a href="views/mainView.html" data-role="button" class="btn btn-action">Notify</a>
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">AMP</a>
         <br />
-        <a href="views/settingView.html" data-role="button" class="btn btn-action">Settings</a>
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">ANZ</a>
         <br />
-        <a href="views/stockListView.html" data-role="button" class="btn btn-action">Stock List</a>
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">BHP</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">BXB</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">CBA</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">CSL</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">IAG</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">MQG</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">NAB</a>
+        <br />
+        <a href="views/notifyView.html" data-role="button" class="btn btn-action">ORG</a>
     </div>
     <div data-role="footer">
     </div>
 </div>
+-->

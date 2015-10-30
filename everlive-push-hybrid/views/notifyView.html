@@ -2,20 +2,27 @@
     <div data-role="header">
         <div data-role="navbar">
             Notification Settings
-            <a class="nav-button nav-button-logout hide-text" data-align="left" data-role="button" data-click="app.logout">Log out</a>
+            <a class="nav-button nav-button-back hide-text" data-align="left" data-role="button" href="views/homeView.html">Back</a>
         </div>
     </div>
+    
+    
+    <div class="list">
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Above</span>
+    <input type="text" placeholder="Below Point">
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Below</span>
+    <input type="text" placeholder="Below Point">
+  </label>
+</div>
+    
     <div class="console">
-        <br />
-        <div data-role="header" data-position="fixed"  data-tap-toggle="false">
-		  <h1>Notify when price</h1>
-          Reach <input type="text" name="reach" style="border:0px">
-            <br /> <hr />
-          Below <input type="text" name="Below" style="border:0px">
-        </div>
+<a href="views/homeView.html" data-role="button" class="btn btn-action">Save</a>
     </div>
     <div class="console1">
         <br />
-        <a href="views/moreInfoView.html" class="btn btn-action">More Info</a>
+        <!--<a href="views/moreInfoView.html" class="btn btn-action">More Info</a>-->
     </div>
 </div>
